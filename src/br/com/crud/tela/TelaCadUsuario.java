@@ -41,15 +41,32 @@ public class TelaCadUsuario extends javax.swing.JFrame {
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "Adicionado com sucesso");
                     limparCampos();
-                } else {
-                    JOptionPane.showMessageDialog(null, "Erro ao adicionar");
                 }
             }
 
         } catch (Exception e) {
-
+             JOptionPane.showMessageDialog(null, e);
         }
 
+    }
+    
+     public void pesquisar(){
+        String sql = "select * from usuario where id=?";
+        try{
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1,txtId.getText());
+            rs = pst.executeQuery();
+            if(rs.next()){
+                txtNome.setText(rs.getString(2));
+                txtIdade.setText(rs.getString(3));
+                cboSexo.setSelectedItem(rs.getString(4));
+            }else{
+                JOptionPane.showMessageDialog(null, "Usuário não encontrado");
+                limparCampos();
+            }
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, e);
+        }
     }
     
     public void limparCampos(){
@@ -76,6 +93,8 @@ public class TelaCadUsuario extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        txtId = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Painel de Controle Usuário");
@@ -106,6 +125,11 @@ public class TelaCadUsuario extends javax.swing.JFrame {
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/crud/icones/imgDeletar.png"))); // NOI18N
         jButton4.setToolTipText("Deletar");
 
+        txtId.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel4.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel4.setText("🔎 ID");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -134,11 +158,21 @@ public class TelaCadUsuario extends javax.swing.JFrame {
                         .addGap(44, 44, 44)
                         .addComponent(jButton4)))
                 .addContainerGap(73, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel4)
+                .addGap(18, 18, 18)
+                .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(46, 46, 46))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(72, 72, 72)
+                .addGap(23, 23, 23)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -211,6 +245,8 @@ public class TelaCadUsuario extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtIdade;
     private javax.swing.JTextField txtNome;
     // End of variables declaration//GEN-END:variables
