@@ -58,8 +58,8 @@ public class TelaCadUsuario extends javax.swing.JFrame {
             rs = pst.executeQuery();
             if(rs.next()){
                 txtNome.setText(rs.getString(2));
-                txtIdade.setText(rs.getString(3));
-                cboSexo.setSelectedItem(rs.getString(4));
+                txtIdade.setText(rs.getString(4));
+                cboSexo.setSelectedItem(rs.getString(3));
             }else{
                 JOptionPane.showMessageDialog(null, "Usuário não encontrado");
                 limparCampos();
@@ -69,6 +69,29 @@ public class TelaCadUsuario extends javax.swing.JFrame {
         }
     }
     
+     
+    public void alterar(){
+        String sql = "update usuario set nome=?, idade=?, sexo=? where id=?";
+        try{
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1,txtNome.getText());
+            pst.setString(2,txtIdade.getText());
+            pst.setString(3,cboSexo.getSelectedItem().toString());
+            pst.setString(4,txtId.getText());
+            if (txtNome.getText().isEmpty() || txtIdade.getText().isEmpty() || txtId.getText().isEmpty()){
+                JOptionPane.showMessageDialog(null,"Preencha os campos obrigatorios");
+            }else{
+                int alterado = pst.executeUpdate();
+                if(alterado > 0){
+                    JOptionPane.showMessageDialog(null,"Dados alterados com sucesso");
+                    limparCampos();
+                }
+            }
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+     
     public void limparCampos(){
         txtNome.setText("");
         txtIdade.setText("");
@@ -106,7 +129,7 @@ public class TelaCadUsuario extends javax.swing.JFrame {
 
         jLabel3.setText("Idade");
 
-        cboSexo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "masculino", "feminino", " " }));
+        cboSexo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "masculino", "feminino" }));
 
         btnAdicionar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/crud/icones/imgAdd.png"))); // NOI18N
         btnAdicionar.setToolTipText("Adicionar");
@@ -118,9 +141,19 @@ public class TelaCadUsuario extends javax.swing.JFrame {
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/crud/icones/imgAtt.png"))); // NOI18N
         jButton2.setToolTipText("Atualizar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/crud/icones/imgPesquisa.png"))); // NOI18N
         jButton3.setToolTipText("Pesquisar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/crud/icones/imgDeletar.png"))); // NOI18N
         jButton4.setToolTipText("Deletar");
@@ -200,6 +233,14 @@ public class TelaCadUsuario extends javax.swing.JFrame {
     private void btnAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarActionPerformed
         adicionar();
     }//GEN-LAST:event_btnAdicionarActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        pesquisar();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        alterar();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
