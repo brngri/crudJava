@@ -45,58 +45,80 @@ public class TelaCadUsuario extends javax.swing.JFrame {
             }
 
         } catch (Exception e) {
-             JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e);
         }
 
     }
-    
-     public void pesquisar(){
+
+    public void pesquisar() {
         String sql = "select * from usuario where id=?";
-        try{
+        try {
             pst = conexao.prepareStatement(sql);
-            pst.setString(1,txtId.getText());
+            pst.setString(1, txtId.getText());
             rs = pst.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 txtNome.setText(rs.getString(2));
                 txtIdade.setText(rs.getString(4));
                 cboSexo.setSelectedItem(rs.getString(3));
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(null, "Usuário não encontrado");
                 limparCampos();
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
-     
-    public void alterar(){
+
+    public void alterar() {
         String sql = "update usuario set nome=?, idade=?, sexo=? where id=?";
-        try{
+        try {
             pst = conexao.prepareStatement(sql);
-            pst.setString(1,txtNome.getText());
-            pst.setString(2,txtIdade.getText());
-            pst.setString(3,cboSexo.getSelectedItem().toString());
-            pst.setString(4,txtId.getText());
-            if (txtNome.getText().isEmpty() || txtIdade.getText().isEmpty() || txtId.getText().isEmpty()){
-                JOptionPane.showMessageDialog(null,"Preencha os campos obrigatorios");
-            }else{
+            pst.setString(1, txtNome.getText());
+            pst.setString(2, txtIdade.getText());
+            pst.setString(3, cboSexo.getSelectedItem().toString());
+            pst.setString(4, txtId.getText());
+            if (txtNome.getText().isEmpty() || txtIdade.getText().isEmpty() || txtId.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Preencha os campos obrigatorios");
+            } else {
                 int alterado = pst.executeUpdate();
-                if(alterado > 0){
-                    JOptionPane.showMessageDialog(null,"Dados alterados com sucesso");
+                if (alterado > 0) {
+                    JOptionPane.showMessageDialog(null, "Dados alterados com sucesso");
                     limparCampos();
                 }
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-     
-    public void limparCampos(){
+
+    public void deletar() {
+        if (txtId.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Preencha os campos ID");
+        } else {
+            int confirmar = JOptionPane.showConfirmDialog(null, "Deseja deletar esse/a usuário/a?", "ATENÇÃO", JOptionPane.YES_NO_OPTION);
+            if (confirmar == JOptionPane.YES_OPTION) {
+                String sql = "delete from usuario where id=?";
+                try {
+                    pst = conexao.prepareStatement(sql);
+                    pst.setString(1, txtId.getText());
+                    int deletado = pst.executeUpdate();
+                    if (deletado > 0) {
+                        JOptionPane.showMessageDialog(null, "Usuário deletado com sucesso");
+                        limparCampos();
+                    }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e);
+                }
+            }
+        }
+    }
+
+    public void limparCampos() {
         txtNome.setText("");
         txtIdade.setText("");
+        txtId.setText("");
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -157,6 +179,11 @@ public class TelaCadUsuario extends javax.swing.JFrame {
 
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/crud/icones/imgDeletar.png"))); // NOI18N
         jButton4.setToolTipText("Deletar");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         txtId.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -241,6 +268,10 @@ public class TelaCadUsuario extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         alterar();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        deletar();
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
